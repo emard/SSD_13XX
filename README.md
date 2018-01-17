@@ -1,3 +1,12 @@
+# SSD_13XX adapted for ULX3S
+
+NOP command is introduced which can read 8-bit value from SPI bus.
+OLED itself is write-only device and free SPI MISO line is now used
+to read button status. FPGA on ULX3S puts MISO line into high impedance
+when OLED is not selected. 
+
+Original README
+
 # SSD_13XX
 A very fast and full featured driver for <b>Solomon Systech SSD1331, SSD1332, SSD1322 and SSD1351</b> drivers designed mainly for Oled's compatible with Teensy's and many other MCU's.
 I have other 2 libraries here in github but have some issues and are quite old, this will replace both.<br>
