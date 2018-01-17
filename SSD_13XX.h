@@ -229,6 +229,8 @@ class SSD_13XX : public Print {
 	inline uint16_t htmlTo565(int32_t color_) { return (uint16_t)(((color_ & 0xF80000) >> 8) | ((color_ & 0x00FC00) >> 5) | ((color_ & 0x0000F8) >> 3));}
 	inline void 	Color565ToRGB(uint16_t color, uint8_t &r, uint8_t &g, uint8_t &b){r = (((color & 0xF800) >> 11) * 527 + 23) >> 6; g = (((color & 0x07E0) >> 5) * 259 + 33) >> 6; b = ((color & 0x001F) * 527 + 23) >> 6;}
 	//void 			printPacket(word data,uint8_t count);
+	//------------------------------- NOP (read from SPI bus) ----------------------------------
+	uint8_t nop();
 
 
  protected:
@@ -488,7 +490,7 @@ class SSD_13XX : public Print {
 			waitTransmitComplete(mcr);
 		}
 
-/* ----------------- ARM (XTENSA ESP8266) ------------------------*/
+/* ----------------- (XTENSA ESP8266) ------------------------*/
 	#elif defined(ESP8266)
 		#if defined(_ESP8266_STANDARDMODE)
 			uint8_t 			_cs,_dc;
@@ -570,14 +572,12 @@ class SSD_13XX : public Print {
 				GPIO_REG_WRITE(GPIO_OUT_W1TS_ADDRESS, _pinRegister(_cs));//H
 			#endif
 		}
-
-/* ----------------- UNKNOWN (Legacy) ------------------------*/
 	#else
-		uint8_t 			_cs,_dc;
+		uint8_t _cs,_dc;
 
-		void spiwrite(uint8_t c)
+		uint8_t spiwrite(uint8_t c)
 		__attribute__((always_inline)) {
-			SPI.transfer(c);
+			return SPI.transfer(c);
 		}
 
 		void spiwrite16(uint16_t c)

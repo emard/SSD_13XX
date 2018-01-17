@@ -263,7 +263,10 @@ void SSD_13XX::begin(bool avoidSPIinit)
 #else//(xxx) Rest of CPU
 	pinMode(_dc, OUTPUT);
 	pinMode(_cs, OUTPUT);
-	if (!avoidSPIinit) SPI.begin();
+	// if (!avoidSPIinit) SPI.begin(14, 12, 13, -1); // v1.7
+	if (!avoidSPIinit) SPI.begin(14, 2, 15, -1); // v1.8, CS=16
+	// SPI.setFrequency(7000000);
+	// SPI.setDataMode(SPI_MODE3);
 	#if !defined(SPI_HAS_TRANSACTION)
 		if (!avoidSPIinit){
 			SPI.setClockDivider(4);
@@ -2677,6 +2680,14 @@ fix this but is the only 'fast way' I found to acieve this!
 			enableCommandStream(); spiwrite(c); disableCS();
 		}
 
+		uint8_t SSD_13XX::nop()
+		{
+		        startTransaction();
+			enableCommandStream();
+			uint8_t retval = spiwrite(CMD_NOP); disableCS();
+			closeTransaction();
+			return retval;
+		}
 
 		void SSD_13XX::writedata8_last(uint8_t c)
 		{
